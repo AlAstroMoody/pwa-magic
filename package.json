@@ -12,7 +12,8 @@
     "lint:oxlint": "oxlint . --fix -D correctness --ignore-path .gitignore",
     "lint:eslint": "eslint . --fix",
     "lint": "run-s lint:*",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "deploy": "gh-pages -d dist --branch gh-pages --dotfiles"
   },
   "dependencies": {
     "vue": "^3.5.12",
@@ -29,6 +30,7 @@
     "eslint-import-resolver-typescript": "^3.6.3",
     "eslint-plugin-oxlint": "^0.11.0",
     "eslint-plugin-vue": "^9.30.0",
+    "gh-pages": "^6.2.0",
     "npm-run-all2": "^7.0.1",
     "oxlint": "^0.11.0",
     "prettier": "^3.3.3",
@@ -37,7 +39,7 @@
     "vite": "^5.4.10",
     "vite-plugin-pwa": "^0.20.5",
     "vite-plugin-vue-devtools": "^7.5.4",
-    "vue-tsc": "^2.1.10",
-    "vite-tsconfig-paths": "^5.1.2"
+    "vite-tsconfig-paths": "^5.1.2",
+    "vue-tsc": "^2.1.10"
   }
 }
