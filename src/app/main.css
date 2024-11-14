@@ -1,0 +1,26 @@
+@import './styles/base.css';
+@import './styles/fonts.css';
+
+#app {
+  margin: 0 auto;
+  padding: 1rem;
+  font-weight: normal;
+}
+
+a,
+.green {
+  text-decoration: none;
+  color: hsla(160, 100%, 37%, 1);
+  transition: 0.4s;
+  padding: 3px;
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: hsla(160, 100%, 37%, 0.2);
+  }
+}
+
+h1 {
+  font-size: 1.5rem;
+}
