@@ -13,9 +13,9 @@ export default defineConfig({
     vueDevTools(),
     VitePWA({
       registerType: 'autoUpdate',
-      devOptions: {
-        enabled: true,
-      },
+      // devOptions: {
+      //   enabled: true,
+      // },
       workbox: {
         cleanupOutdatedCaches: false,
         globPatterns: ['**/*.{js,css,html,ico,png,svg,json,vue,txt,woff2,webp}'],
