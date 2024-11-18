@@ -1,1 +1,0 @@
-import{d as o,o as r,c,a}from"./index-Bua3m6LV.js";const i=o({__name:"ContactPicker",setup(n){async function e(){try{const t=await navigator.contacts.getProperties();alert(t)}catch{alert("This browser doesn't support the Contact Picker API")}}return(t,s)=>(r(),c("div",null,[a("button",{onClick:e},"Click")]))}});export{i as default};
