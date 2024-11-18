@@ -2,7 +2,11 @@
 
 interface Navigator {
   share?: (data?: ShareData) => Promise<void>
-  contacts: { getProperties: () => Promise<void> }
+  contacts: {
+    getProperties: () => Promise<void>
+    requestPermission: () => Promise<string>
+    select: () => Promise<{ name: string; email: string; phone: string }[]>
+  }
 }
 
 interface Window {
