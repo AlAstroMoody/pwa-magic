@@ -1,0 +1,1 @@
+import{d as e,o as c,c as o}from"./index-CzH7YJ3g.js";const i=e({__name:"ContactPicker",setup(a){async function t(){try{await navigator.contacts.getProperties()}catch{alert("Не поддерживается на устройстве")}}return(n,r)=>(c(),o("button",{onClick:t},"Click"))}});export{i as default};
