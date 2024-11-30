@@ -1,5 +1,6 @@
 @import './styles/base.css';
 @import './styles/fonts.css';
+@import './styles/reset.css';
 
 #app {
   margin: 0 auto;

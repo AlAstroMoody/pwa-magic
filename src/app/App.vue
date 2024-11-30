@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { useTheme } from '@/shared/composables'
+import { iThemeButton } from '@/shared/ui'
 import { RouterLink, RouterView } from 'vue-router'
+const { theme, toggleTheme } = useTheme()
 
 const menu = [
   { title: 'Web API', link: '/' },
@@ -15,6 +18,7 @@ const menu = [
           {{ item.title }}
         </RouterLink>
       </nav>
+      <iThemeButton @click="toggleTheme">{{ theme }}</iThemeButton>
     </div>
   </header>
 
@@ -29,6 +33,15 @@ header {
   max-height: 100vh;
   font-family: Blackcraft;
   padding-bottom: 1rem;
+  margin-bottom: 0.5rem;
+  border-bottom: var(--color-border) 1px solid;
+}
+
+header .wrapper {
+  display: flex;
+  place-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
 }
 
 nav {
@@ -62,12 +75,6 @@ nav a:first-of-type {
     display: flex;
     place-items: center;
     padding-right: calc(var(--section-gap) / 2);
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
   }
 
   nav {

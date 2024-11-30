@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { iButton } from '@/shared/ui'
+
 function share() {
   if (navigator.share) {
     navigator
@@ -9,6 +11,8 @@ function share() {
       })
       .then(() => alert('Удалось поделиться'))
       .catch((error) => alert(error))
+  } else {
+    alert('Не поддерживается на устройстве')
   }
 }
 
@@ -16,14 +20,5 @@ const isShared = !!navigator.share
 </script>
 
 <template>
-  <div>
-    <div v-if="!isShared" class="error">Не поддерживается на устройстве</div>
-    <button @click="share" v-else>click</button>
-  </div>
+  <iButton @click="share">click</iButton>
 </template>
-
-<style>
-.error {
-  color: red;
-}
-</style>

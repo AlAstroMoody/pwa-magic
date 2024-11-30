@@ -13,7 +13,7 @@
     "lint:eslint": "eslint . --fix",
     "lint": "run-s lint:*",
     "format": "prettier --write src/",
-    "deploy": "gh-pages -d dist --branch gh-pages --dotfiles"
+    "deploy": "gh-pages -d dist --branch gh-pages"
   },
   "dependencies": {
     "vue": "^3.5.12",

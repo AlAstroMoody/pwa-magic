@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { iButton } from '@/shared/ui'
 import { dataURLtoFile } from '@/shared/utils'
 import { ref } from 'vue'
 
@@ -35,7 +36,7 @@ function saveAsFile() {
   <div id="file-system">
     <div class="chapter">
       <div>Выбор файла</div>
-      <button @click="getFile">Выбрать файл</button>
+      <iButton @click="getFile">Выбрать файл</iButton>
       <div v-if="file">Имя файла: {{ file.name }} | Размер: {{ file.size }} байт</div>
     </div>
     <div class="chapter">
@@ -50,8 +51,8 @@ function saveAsFile() {
       </label>
 
       <div class="buttons">
-        <button @click="saveAsBase64">Сохранить в base64</button>
-        <button @click="saveAsFile">Сохранить как файл</button>
+        <iButton @click="saveAsBase64">Сохранить в base64</iButton>
+        <iButton @click="saveAsFile">Сохранить как файл</iButton>
       </div>
       (не забудьте указать разрешение файла)
     </div>

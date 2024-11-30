@@ -1,11 +1,21 @@
 /// <reference types="vite/client" />
+interface ContactInfo {
+  address: Array<ContactAddress>
+  email: Array<string>
+  icon: Blob
+  name: Array<string>
+  tel: Array<string>
+}
 
 interface Navigator {
   share?: (data?: ShareData) => Promise<void>
   contacts: {
     getProperties: () => Promise<void>
     requestPermission: () => Promise<string>
-    select: () => Promise<{ name: string; email: string; phone: string }[]>
+    select: (
+      properties: ContactProperty[],
+      options?: ContactsSelectOptions,
+    ) => Promise<ContactInfo[]>
   }
 }
 
