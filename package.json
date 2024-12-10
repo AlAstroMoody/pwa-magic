@@ -16,6 +16,7 @@
     "deploy": "gh-pages -d dist --branch gh-pages"
   },
   "dependencies": {
+    "@types/web-bluetooth": "^0.0.20",
     "vue": "^3.5.12",
     "vue-router": "^4.4.5"
   },

@@ -23,5 +23,10 @@
     "key": "WebOtp",
     "title": "WEB OTP API",
     "description": "Позволяет автоматически вставлять код из смс"
+  },
+  {
+    "key": "WebBluetooth",
+    "title": "Web Bluetooth API",
+    "description": "Обеспечивает возможность подключения и взаимодействия с периферийными устройствами Bluetooth Low Energy."
   }
 ]

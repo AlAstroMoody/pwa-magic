@@ -9,6 +9,7 @@
   width: fit-content;
   color: var(--color-background);
   background-color: var(--color-text);
+  transition: 450ms;
 }
 .button:active {
   transition: all 0.25s;

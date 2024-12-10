@@ -14,6 +14,7 @@
   margin: auto;
   border: none;
   margin: -10px;
+  cursor: pointer;
 }
 
 .theme::before {

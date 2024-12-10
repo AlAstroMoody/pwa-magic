@@ -17,6 +17,7 @@ interface Navigator {
       options?: ContactsSelectOptions,
     ) => Promise<ContactInfo[]>
   }
+  bluetooth?: Bluetooth
 }
 
 interface Window {
@@ -27,4 +28,25 @@ interface Window {
       close: () => Promise<void>
     }>
   }>
+}
+
+interface Bluetooth {
+  requestDevice(options?: RequestDeviceOptions): Promise<BluetoothDevice>
+}
+
+interface RequestDeviceOptions {
+  filters?: BluetoothLEScanFilter[]
+  optionalServices?: BluetoothServiceUUID[]
+}
+
+interface BluetoothLEScanFilter {
+  services?: BluetoothServiceUUID[]
+  name?: string
+  namePrefix?: string
+}
+
+type BluetoothServiceUUID = string | number
+
+interface CharacteristicValueChangeEvent extends Event {
+  target: BluetoothRemoteGATTCharacteristic
 }

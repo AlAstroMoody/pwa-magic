@@ -1,13 +1,20 @@
 <script setup lang="ts">
 import { useTheme } from '@/shared/composables'
 import { iThemeButton } from '@/shared/ui'
+import { onMounted } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
+
 const { theme, toggleTheme } = useTheme()
 
 const menu = [
   { title: 'Web API', link: '/' },
   { title: 'Зачем?', link: '/about' },
 ]
+
+onMounted(() => {
+  const loader = document.querySelector('.loader') as HTMLElement
+  if (loader) loader.style.display = 'none'
+})
 </script>
 
 <template>
