@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { iButton } from '@/shared/ui'
+import { showError } from '@/shared/utils'
 import { ref } from 'vue'
 
 const isSupported = ref('bluetooth' in navigator)
@@ -43,8 +44,8 @@ async function scan() {
       characteristic.readValue()
 
       return characteristic
-    } catch {
-      alert('Произошла ошибка')
+    } catch (error) {
+      alert(`Ошибка: ${showError(error)}`)
     }
   }
 

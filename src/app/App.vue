@@ -12,8 +12,10 @@ const menu = [
 ]
 
 onMounted(() => {
-  const loader = document.querySelector('.loader') as HTMLElement
-  if (loader) loader.style.display = 'none'
+  setTimeout(() => {
+    const loader = document.querySelector('.loader') as HTMLElement
+    if (loader) loader.style.display = 'none'
+  }, 500)
 })
 </script>
 
