@@ -1,1 +1,0 @@
-import{i as o}from"./IButton-hQYndbJf.js";import{d as a,o as r,i as n,w as c,b as i,u as s}from"./index-CviH_079.js";const m=a({__name:"ContactPicker",setup(p){async function e(){try{await navigator.contacts.getProperties()}catch{alert("Не поддерживается на устройстве")}}return(u,t)=>(r(),n(s(o),{onClick:e},{default:c(()=>t[0]||(t[0]=[i("Click")])),_:1}))}});export{m as default};
