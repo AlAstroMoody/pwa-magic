@@ -1,6 +1,11 @@
+<script setup lang="ts">
+defineProps({ disabled: Boolean })
+</script>
+
 <template>
-  <button class="button"><slot /></button>
+  <button class="button" :disabled="disabled"><slot /></button>
 </template>
+
 <style>
 .button {
   padding: 8px 16px;
@@ -11,10 +16,16 @@
   background-color: var(--color-text);
   transition: 450ms;
 }
-.button:active {
+
+.button:active:not(:disabled) {
   transition: all 0.25s;
   -webkit-transition: all 0.25s;
   box-shadow: none;
   transform: scale(0.9);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 </style>

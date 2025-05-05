@@ -66,7 +66,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="media-capture">
+  <div class="api-content__wrapper">
     <iButton @click="handleEnumerateDevices">Получить список доступных устройств</iButton>
     <iButton @click="handleGetSupportedConstraints">Получить список требований к потоку</iButton>
     <iButton @click="handleGetUserMedia">Захват камеры</iButton>
@@ -77,11 +77,6 @@ onUnmounted(() => {
 </template>
 
 <style>
-.media-capture {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
 .media-capture__video:not([srcObject]) {
   background: green;
   margin: auto;

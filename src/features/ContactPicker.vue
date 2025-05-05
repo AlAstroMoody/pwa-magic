@@ -85,7 +85,7 @@ async function handleSelectContacts(): Promise<void> {
 <template>
   <div v-if="!isSecureContext">Для работы Contacts API требуется HTTPS или localhost</div>
   <div v-else-if="!isSupported">Contacts API не поддерживается этим браузером</div>
-  <div class="contacts-container" v-if="isSupported && isSecureContext">
+  <div class="api-content__wrapper" v-if="isSupported && isSecureContext">
     <iButton @click="checkPropertiesSupport" :disabled="!isSupported || !isSecureContext">
       Проверить поддерживаемые свойства
     </iButton>
@@ -110,12 +110,3 @@ async function handleSelectContacts(): Promise<void> {
     </div>
   </div>
 </template>
-
-<style>
-.contacts-container {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 16px;
-}
-</style>

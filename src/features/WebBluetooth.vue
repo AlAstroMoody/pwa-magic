@@ -56,7 +56,6 @@ async function scan() {
 <template>
   <div v-if="!isSupported">Не поддерживается устройством</div>
   <div v-else>
-    <div>Пока на паузе, не получается проверить работу</div>
     <iButton @click="scan">scan</iButton>
     <div v-if="indicator">Уровень заряда устройства: {{ indicator }}</div>
   </div>

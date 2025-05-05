@@ -28,6 +28,8 @@ interface Window {
       close: () => Promise<void>
     }>
   }>
+  SpeechRecognition: new () => SpeechRecognition
+  webkitSpeechRecognition: new () => SpeechRecognition
 }
 
 interface Bluetooth {
@@ -49,4 +51,41 @@ type BluetoothServiceUUID = string | number
 
 interface CharacteristicValueChangeEvent extends Event {
   target: BluetoothRemoteGATTCharacteristic
+}
+
+interface SpeechRecognitionResult {
+  readonly isFinal: boolean
+  readonly [index: number]: SpeechRecognitionAlternative
+}
+
+interface SpeechRecognitionAlternative {
+  readonly transcript: string
+  readonly confidence: number
+}
+
+interface SpeechRecognitionResultList {
+  readonly length: number
+  [index: number]: SpeechRecognitionResult
+}
+
+interface SpeechRecognitionEvent extends Event {
+  readonly results: SpeechRecognitionResultList
+  readonly resultIndex: number
+}
+
+interface SpeechRecognitionErrorEvent extends Event {
+  readonly error: string
+  readonly message: string
+}
+
+interface SpeechRecognition extends EventTarget {
+  lang: string
+  continuous: boolean
+  interimResults: boolean
+  maxAlternatives: number
+  onresult: ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => unknown) | null
+  onerror: ((this: SpeechRecognition, ev: SpeechRecognitionErrorEvent) => unknown) | null
+  onend: ((this: SpeechRecognition, ev: Event) => unknown) | null
+  start(): void
+  stop(): void
 }
