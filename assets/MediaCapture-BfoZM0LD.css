@@ -1,0 +1,1 @@
+.media-capture__video:not([srcObject]){background:green;margin:auto}
