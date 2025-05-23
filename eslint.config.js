@@ -16,6 +16,11 @@ export default [
 
   ...pluginVue.configs['flat/essential'],
   ...vueTsEslintConfig(),
-  oxlint.configs['flat/recommended'],
+  {
+    ...oxlint.configs['flat/recommended'],
+    rules: {
+      'oxlint/no-control-char': 'off',
+    },
+  },
   skipFormatting,
 ]

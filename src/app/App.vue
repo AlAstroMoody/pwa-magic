@@ -85,11 +85,5 @@ nav a:first-of-type {
     place-items: center;
     padding-right: calc(var(--section-gap) / 2);
   }
-
-  nav {
-    text-align: left;
-    font-size: 1rem;
-    padding-bottom: 1rem;
-  }
 }
 </style>
