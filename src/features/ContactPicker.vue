@@ -14,24 +14,12 @@ interface ContactsManager {
   select: (properties: string[], options?: { multiple?: boolean }) => Promise<Contact[]>
 }
 
-const isSupported = ref('contacts' in navigator)
+const isSupported = ref('contacts' in navigator && 'ContactsManager' in window)
 const isSecureContext = ref(
   window.location.protocol === 'https:' || window.location.hostname === 'localhost',
 )
 const selectedContacts = ref<Contact[] | null>(null)
 const supportedProperties = ref<string[] | null>(null)
-
-async function checkPermissions(): Promise<boolean> {
-  if (!isSupported.value) return false
-  try {
-    const permissionStatus = await navigator.permissions.query({
-      name: 'contacts' as PermissionName,
-    })
-    return permissionStatus.state === 'granted' || permissionStatus.state === 'prompt'
-  } catch (error) {
-    return false
-  }
-}
 
 async function checkPropertiesSupport(): Promise<void> {
   if (!isSupported.value) {
@@ -40,10 +28,6 @@ async function checkPropertiesSupport(): Promise<void> {
   }
   if (!isSecureContext.value) {
     alert('Для работы Contacts API требуется HTTPS или localhost.')
-    return
-  }
-  if (!(await checkPermissions())) {
-    alert('Доступ к контактам не разрешён.')
     return
   }
   try {
@@ -65,13 +49,9 @@ async function handleSelectContacts(): Promise<void> {
     alert('Для работы Contacts API требуется HTTPS или localhost.')
     return
   }
-  if (!(await checkPermissions())) {
-    alert('Доступ к контактам не разрешён.')
-    return
-  }
   try {
     const contacts = await navigator.contacts.select(['name', 'tel', 'email'], { multiple: true })
-    if (!contacts.length) {
+    if (contacts.length === 0) {
       alert('Контакты не выбраны.')
       return
     }
