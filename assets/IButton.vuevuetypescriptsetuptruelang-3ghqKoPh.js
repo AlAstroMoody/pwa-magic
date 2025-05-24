@@ -1,0 +1,1 @@
+import{d as t,o as s,c as a,r as n}from"./index-COVE8rQ0.js";const d=["disabled"],c=t({__name:"IButton",props:{disabled:Boolean},setup(e){return(o,l)=>(s(),a("button",{class:"button",disabled:e.disabled},[n(o.$slots,"default")],8,d))}});export{c as _};
