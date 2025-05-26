@@ -48,5 +48,10 @@
     "key": "WebVibration",
     "title": "Web Vibration API",
     "description": "Позволяет запускать вибрацию на устройствах, поддерживающих эту функцию"
+  },
+  {
+    "key": "BarcodeDetection",
+    "title": "Barcode Detection API",
+    "description": "API обнаружения штрихкодов обнаруживает линейные и двумерные штрихкоды на изображениях."
   }
 ]

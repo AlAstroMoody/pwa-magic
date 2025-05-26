@@ -20,16 +20,25 @@ interface Navigator {
   bluetooth?: Bluetooth
 }
 
+interface BarcodeDetector {
+  detect(image: ImageBitmapSource): Promise<{ rawValue: string }[]>
+}
+
+type BarcodeDetectorConstructor = {
+  new (options?: { formats: string[] }): BarcodeDetector
+}
+
 interface Window {
   showOpenFilePicker?: () => Promise<[fileHandle]>
   showSaveFilePicker?: () => Promise<{
     createWritable: () => Promise<{
-      write: (file: File | String) => Promise<void>
+      write: (file: File | string) => Promise<void>
       close: () => Promise<void>
     }>
   }>
   SpeechRecognition: new () => SpeechRecognition
   webkitSpeechRecognition: new () => SpeechRecognition
+  BarcodeDetector: BarcodeDetectorConstructor
 }
 
 interface Bluetooth {
