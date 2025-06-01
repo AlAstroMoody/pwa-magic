@@ -68,11 +68,18 @@
     {
       "action": "/api/FileHandling",
       "accept": {
-        "image/png": [".png"],
-        "image/jpeg": [".jpg", ".jpeg"]
+        "image/*": [".png", ".jpg", ".jpeg"]
       },
-      "icons": [],
-      "launch_type": "single-client"
+      "icons": [
+        {
+          "src": "./favicons/icon_x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     }
-  ]
+  ],
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  }
 }
