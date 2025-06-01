@@ -4,6 +4,7 @@
   "start_url": "https://alastromoody.github.io/pwa-magic/",
   "description": "Magic",
   "id": "pwa-magic",
+  "version": "0.0.1",
   "icons": [
     {
       "src": "./favicons/favicon-16x16.png",
@@ -62,5 +63,16 @@
         }
       ]
     }
-  }
+  },
+  "file_handlers": [
+    {
+      "action": "/api/FileHandling",
+      "accept": {
+        "image/png": [".png"],
+        "image/jpeg": [".jpg", ".jpeg"]
+      },
+      "icons": [],
+      "launch_type": "single-client"
+    }
+  ]
 }

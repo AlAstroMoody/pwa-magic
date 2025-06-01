@@ -1,0 +1,1 @@
+import{d as t,c as s,o as a,r as n}from"./index-Bs-7ZeCf.js";const d=["disabled"],c=t({__name:"IButton",props:{disabled:Boolean},setup(e){return(o,l)=>(a(),s("button",{class:"button",disabled:e.disabled},[n(o.$slots,"default")],8,d))}});export{c as _};
