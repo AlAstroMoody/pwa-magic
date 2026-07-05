@@ -1,3 +1,8 @@
+export { default as iActions } from './IActions.vue'
+export { default as iApiFeature } from './IApiFeature.vue'
 export { default as iButton } from './IButton.vue'
+export { default as iChapter } from './IChapter.vue'
 export { default as iDetails } from './iDetails.vue'
+export { default as iInput } from './IInput.vue'
 export { default as iThemeButton } from './IThemeButton.vue'
+export { default as iToastContainer } from './IToastContainer.vue'

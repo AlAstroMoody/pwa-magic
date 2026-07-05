@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import { iButton } from '@/shared/ui'
-import { showError } from '@/shared/utils'
+import { useApiGuard, useToast } from '@/shared/composables'
+import { iActions, iApiFeature, iButton } from '@/shared/ui'
 import { onMounted, ref } from 'vue'
 
+const toast = useToast()
 const isSupported = ref(false)
+const { meta, isSecureContext, requiresSecureContext, guard } = useApiGuard(
+  'WebNotifications',
+  isSupported,
+)
+
 const permission = ref<NotificationPermission>('default')
 const isMobile = ref(false)
 
@@ -14,28 +20,22 @@ onMounted(() => {
 })
 
 async function requestPermission(): Promise<void> {
-  if (!isSupported.value) {
-    alert(
-      isMobile.value
-        ? 'Мобильные браузеры требуют установки PWA для уведомлений'
-        : 'Notifications API не поддерживается',
-    )
-    return
-  }
+  if (!guard()) return
 
   try {
     permission.value = await Notification.requestPermission()
     if (permission.value === 'granted' && isMobile.value) {
-      alert('Для мобильных уведомлений может потребоваться установка PWA')
+      toast.info('Для мобильных уведомлений может потребоваться установка PWA')
     }
   } catch (error) {
-    alert(`Ошибка: ${showError(error)}`)
+    toast.error(error)
   }
 }
 
 function showNotification(): void {
-  if (!isSupported.value || permission.value !== 'granted') {
-    alert('Уведомления не разрешены')
+  if (!guard()) return
+  if (permission.value !== 'granted') {
+    toast.info('Уведомления не разрешены')
     return
   }
 
@@ -54,29 +54,33 @@ function showNotification(): void {
       })
     }
   } catch (error) {
-    alert(`Ошибка: ${showError(error)}`)
+    toast.error(error)
   }
 }
 </script>
 
 <template>
-  <div v-if="!isSupported">
-    {{ isMobile ? 'Ваш мобильный браузер не поддерживает уведомления' : 'API не поддерживается' }}
-  </div>
-  <div v-else-if="isMobile">
-    Для работы уведомлений на мобильном устройстве:
-    <ul>
-      <li>Установите приложение как PWA</li>
-      <li>Разрешите уведомления в настройках браузера</li>
-    </ul>
-  </div>
+  <iApiFeature
+    :is-supported="isSupported"
+    :is-secure-context="isSecureContext"
+    :requires-secure-context="requiresSecureContext"
+    :api-name="meta.title"
+  >
+    <div v-if="isMobile">
+      Для работы уведомлений на мобильном устройстве:
+      <ul>
+        <li>Установите приложение как PWA</li>
+        <li>Разрешите уведомления в настройках браузера</li>
+      </ul>
+    </div>
 
-  <div class="api-content__wrapper">
-    <iButton @click="requestPermission" :disabled="permission === 'granted'">
-      Запросить разрешение
-    </iButton>
-    <iButton @click="showNotification" :disabled="permission !== 'granted'">
-      Показать уведомление
-    </iButton>
-  </div>
+    <iActions>
+      <iButton @click="requestPermission" :disabled="permission === 'granted'">
+        Запросить разрешение
+      </iButton>
+      <iButton @click="showNotification" :disabled="permission !== 'granted'">
+        Показать уведомление
+      </iButton>
+    </iActions>
+  </iApiFeature>
 </template>

@@ -1,3 +1,5 @@
+export { getApiMeta } from './apiMeta'
+export type { ApiMeta } from './apiMeta'
 export { dataURLtoFile } from './dataURLtoFile'
 export * from './error'
 export * from './mediaCapture'

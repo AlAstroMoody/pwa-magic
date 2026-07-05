@@ -1,4 +1,5 @@
-import { showError } from "./error";
+import { useToast } from '@/shared/composables'
+import { showError } from './error'
 
 const STORAGE_KEY = 'user_media_devices'
 
@@ -50,7 +51,7 @@ async function togglePictureInPicture(video: HTMLVideoElement | null) {
       await video.requestPictureInPicture()
     }
   } catch (error) {
-    alert(`Ошибка PiP: ${showError(error)}`)
+    useToast().error(`Ошибка PiP: ${showError(error)}`)
   }
 }
 

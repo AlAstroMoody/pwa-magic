@@ -1,7 +1,14 @@
 <script setup lang="ts">
-import { iButton } from '@/shared/ui'
-import { showError } from '@/shared/utils'
+import { useApiGuard, useToast } from '@/shared/composables'
+import { iActions, iApiFeature, iButton } from '@/shared/ui'
 import { ref } from 'vue'
+
+const toast = useToast()
+const isSupported = ref('contacts' in navigator && 'ContactsManager' in window)
+const { meta, isSecureContext, requiresSecureContext, guard } = useApiGuard(
+  'ContactPicker',
+  isSupported,
+)
 
 interface Contact {
   name: string[]
@@ -14,64 +21,49 @@ interface ContactsManager {
   select: (properties: string[], options?: { multiple?: boolean }) => Promise<Contact[]>
 }
 
-const isSupported = ref('contacts' in navigator && 'ContactsManager' in window)
-const isSecureContext = ref(
-  window.location.protocol === 'https:' || window.location.hostname === 'localhost',
-)
 const selectedContacts = ref<Contact[] | null>(null)
 const supportedProperties = ref<string[] | null>(null)
 
 async function checkPropertiesSupport(): Promise<void> {
-  if (!isSupported.value) {
-    alert('Contacts API не поддерживается этим браузером.')
-    return
-  }
-  if (!isSecureContext.value) {
-    alert('Для работы Contacts API требуется HTTPS или localhost.')
-    return
-  }
+  if (!guard()) return
+
   try {
     const contactsManager = navigator.contacts as unknown as ContactsManager
     const properties = await contactsManager.getProperties()
     supportedProperties.value = properties
-    alert(`Поддерживаемые свойства: ${properties.join(', ')}`)
+    toast.info(`Поддерживаемые свойства: ${properties.join(', ')}`)
   } catch (error) {
-    alert(`Ошибка: ${showError(error)}`)
+    toast.error(error)
   }
 }
 
 async function handleSelectContacts(): Promise<void> {
-  if (!isSupported.value) {
-    alert('Contacts API не поддерживается этим браузером.')
-    return
-  }
-  if (!isSecureContext.value) {
-    alert('Для работы Contacts API требуется HTTPS или localhost.')
-    return
-  }
+  if (!guard()) return
+
   try {
     const contacts = await navigator.contacts.select(['name', 'tel', 'email'], { multiple: true })
     if (contacts.length === 0) {
-      alert('Контакты не выбраны.')
+      toast.info('Контакты не выбраны.')
       return
     }
     selectedContacts.value = contacts
   } catch (error) {
-    alert(`Ошибка: ${showError(error)}`)
+    toast.error(error)
   }
 }
 </script>
 
 <template>
-  <div v-if="!isSecureContext">Для работы Contacts API требуется HTTPS или localhost</div>
-  <div v-else-if="!isSupported">Contacts API не поддерживается этим браузером</div>
-  <div class="api-content__wrapper" v-if="isSupported && isSecureContext">
-    <iButton @click="checkPropertiesSupport" :disabled="!isSupported || !isSecureContext">
-      Проверить поддерживаемые свойства
-    </iButton>
-    <iButton @click="handleSelectContacts" :disabled="!isSupported || !isSecureContext">
-      Выбрать контакты
-    </iButton>
+  <iApiFeature
+    :is-supported="isSupported"
+    :is-secure-context="isSecureContext"
+    :requires-secure-context="requiresSecureContext"
+    :api-name="meta.title"
+  >
+    <iActions>
+      <iButton @click="checkPropertiesSupport">Проверить поддерживаемые свойства</iButton>
+      <iButton @click="handleSelectContacts">Выбрать контакты</iButton>
+    </iActions>
     <div v-if="supportedProperties">
       <h3>Поддерживаемые свойства:</h3>
       <ul>
@@ -88,5 +80,5 @@ async function handleSelectContacts(): Promise<void> {
         </li>
       </ul>
     </div>
-  </div>
+  </iApiFeature>
 </template>

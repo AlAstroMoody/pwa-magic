@@ -1,10 +1,11 @@
 <script setup lang="ts"></script>
 
 <template>
-  <button class="theme"></button>
+  <button class="theme-button"></button>
 </template>
-<style scoped>
-.theme {
+
+<style>
+.theme-button {
   position: relative;
   border-radius: 100%;
   width: 40px;
@@ -17,7 +18,7 @@
   cursor: pointer;
 }
 
-.theme::before {
+.theme-button::before {
   content: '';
   position: absolute;
   border-radius: 50%;
@@ -33,11 +34,11 @@
   opacity: 0;
 }
 
-[data-theme='dark'] .theme {
+[data-theme='dark'] .theme-button {
   background: linear-gradient(40deg, #8983f7, #a3dafb 70%);
 }
 
-[data-theme='dark'] .theme::before {
+[data-theme='dark'] .theme-button::before {
   transform: scale(1);
   background: var(--color-background);
   opacity: 1;

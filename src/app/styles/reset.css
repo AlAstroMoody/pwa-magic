@@ -35,6 +35,10 @@ select {
   font: inherit;
 }
 
+a, button {
+  -webkit-tap-highlight-color: transparent;
+}
+
 /* 7. Avoid text overflows */
 p,
 h1,

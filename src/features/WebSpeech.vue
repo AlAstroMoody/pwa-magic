@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { iButton } from '@/shared/ui'
-import { showError } from '@/shared/utils'
+import { useApiGuard, useToast } from '@/shared/composables'
+import { iActions, iApiFeature, iButton } from '@/shared/ui'
 import { ref } from 'vue'
 
+const toast = useToast()
 const isSupported = ref('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)
-const isSecureContext = ref(
-  window.location.protocol === 'https:' || window.location.hostname === 'localhost',
-)
+const { meta, isSecureContext, requiresSecureContext, guard } = useApiGuard('WebSpeech', isSupported)
+
 const transcript = ref<string | null>(null)
 const isRecognizing = ref(false)
 const permissionStatus = ref<PermissionState | null>(null)
@@ -15,7 +15,6 @@ const recognitionInstance = ref<SpeechRecognition | null>(null)
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
 
 async function checkMicrophonePermission(): Promise<boolean> {
-  if (!isSupported.value) return false
   try {
     const result = await navigator.permissions.query({ name: 'microphone' as PermissionName })
     permissionStatus.value = result.state
@@ -26,18 +25,12 @@ async function checkMicrophonePermission(): Promise<boolean> {
 }
 
 async function startRecognition(): Promise<void> {
-  if (!isSupported.value) {
-    alert('Speech Recognition не поддерживается.')
-    return
-  }
-  if (!isSecureContext.value) {
-    alert('Для работы Speech API требуется HTTPS или localhost.')
-    return
-  }
+  if (!guard()) return
   if (!(await checkMicrophonePermission())) {
-    alert('Доступ к микрофону не разрешён. Проверьте настройки браузера.')
+    toast.info('Доступ к микрофону не разрешён. Проверьте настройки браузера.')
     return
   }
+
   try {
     const recognition = new SpeechRecognition()
     recognitionInstance.value = recognition
@@ -47,8 +40,7 @@ async function startRecognition(): Promise<void> {
 
     recognition.onresult = function (event: SpeechRecognitionEvent) {
       if (event.results && event.results.length > 0 && event.results[0].length > 0) {
-        const result = event.results[0][0]
-        transcript.value = result.transcript
+        transcript.value = event.results[0][0].transcript
       } else {
         transcript.value = 'Результаты не получены.'
       }
@@ -76,7 +68,7 @@ async function startRecognition(): Promise<void> {
         default:
           message = `Ошибка: ${event.error}`
       }
-      alert(message)
+      toast.info(message)
       isRecognizing.value = false
       recognitionInstance.value = null
     }
@@ -89,7 +81,7 @@ async function startRecognition(): Promise<void> {
     recognition.start()
     isRecognizing.value = true
   } catch (error) {
-    alert(`Ошибка: ${showError(error)}`)
+    toast.error(error)
   }
 }
 
@@ -100,50 +92,49 @@ function stopRecognition(): void {
       isRecognizing.value = false
       recognitionInstance.value = null
     } catch (error) {
-      alert(`Ошибка: ${showError(error)}`)
+      toast.error(error)
     }
   }
 }
 
 function speakText(): void {
   if (!('speechSynthesis' in window)) {
-    alert('Speech Synthesis не поддерживается.')
+    toast.info('Speech Synthesis не поддерживается.')
     return
   }
-  if (!isSecureContext.value) {
-    alert('Для работы Speech API рекомендуется HTTPS или localhost.')
-    return
-  }
+  if (!guard()) return
+
   try {
     window.speechSynthesis.cancel()
     const utterance = new SpeechSynthesisUtterance(
       transcript.value ||
         "I've seen things... seen things you little people wouldn't believe. Attack ships on fire off the shoulder of Orion bright as magnesium... I rode on the back decks of a blinker and watched C-beams glitter in the dark near the Tannhäuser Gate. All those moments... they'll be gone",
     )
-
     utterance.lang = 'ru-RU'
     window.speechSynthesis.speak(utterance)
   } catch (error) {
-    alert(`Ошибка: ${showError(error)}`)
+    toast.error(error)
   }
 }
 </script>
 
 <template>
-  <div v-if="!isSecureContext">Для работы Speech API требуется HTTPS или localhost</div>
-  <div v-else-if="!isSupported">Speech API не поддерживается</div>
-  <div class="api-content__wrapper">
-    <iButton
-      @click="startRecognition"
-      :disabled="isRecognizing || !isSupported || !isSecureContext"
-    >
-      {{ isRecognizing ? 'Распознавание...' : 'Начать распознавание' }}
-    </iButton>
-    <iButton @click="stopRecognition" :disabled="!isRecognizing">
-      Остановить распознавание
-    </iButton>
-    <iButton @click="speakText" :disabled="!isSupported"> Озвучить текст </iButton>
+  <iApiFeature
+    :is-supported="isSupported"
+    :is-secure-context="isSecureContext"
+    :requires-secure-context="requiresSecureContext"
+    :api-name="meta.title"
+  >
+    <iActions>
+      <iButton @click="startRecognition" :disabled="isRecognizing">
+        {{ isRecognizing ? 'Распознавание...' : 'Начать распознавание' }}
+      </iButton>
+      <iButton @click="stopRecognition" :disabled="!isRecognizing">
+        Остановить распознавание
+      </iButton>
+      <iButton @click="speakText">Озвучить текст</iButton>
+    </iActions>
     <p v-if="transcript">Распознанный текст: {{ transcript }}</p>
     <p v-if="permissionStatus">Статус разрешения микрофона: {{ permissionStatus }}</p>
-  </div>
+  </iApiFeature>
 </template>

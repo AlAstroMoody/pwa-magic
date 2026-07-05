@@ -1,24 +1,25 @@
 <script setup lang="ts">
-import { iButton } from '@/shared/ui'
+import { useApiGuard, useToast } from '@/shared/composables'
+import { iActions, iApiFeature, iButton } from '@/shared/ui'
 import { ref } from 'vue'
 
+const toast = useToast()
 const isSupported = ref('geolocation' in navigator)
+const { meta, isSecureContext, requiresSecureContext, guard } = useApiGuard(
+  'GeolocationApi',
+  isSupported,
+)
 const position = ref<GeolocationPosition | null>(null)
-const error = ref<string | null>(null)
 
 function getCurrentPosition(): void {
-  if (!isSupported.value) {
-    alert('Geolocation API не поддерживается.')
-    return
-  }
+  if (!guard()) return
+
   navigator.geolocation.getCurrentPosition(
     (pos) => {
       position.value = pos
-      error.value = null
     },
     (err) => {
-      error.value = err.message
-      alert(`Ошибка: ${err.message}`)
+      toast.error(err)
     },
     { enableHighAccuracy: true, timeout: 5000 },
   )
@@ -26,14 +27,19 @@ function getCurrentPosition(): void {
 </script>
 
 <template>
-  <div v-if="!isSupported">Geolocation API не поддерживается</div>
-  <div class="api-content__wrapper">
-    <iButton @click="getCurrentPosition">Получить местоположение</iButton>
+  <iApiFeature
+    :is-supported="isSupported"
+    :is-secure-context="isSecureContext"
+    :requires-secure-context="requiresSecureContext"
+    :api-name="meta.title"
+  >
+    <iActions>
+      <iButton @click="getCurrentPosition">Получить местоположение</iButton>
+    </iActions>
     <div v-if="position">
       <p>Широта: {{ position.coords.latitude }}</p>
       <p>Долгота: {{ position.coords.longitude }}</p>
       <p>Точность: {{ position.coords.accuracy }} м</p>
     </div>
-    <p v-if="error">Ошибка: {{ error }}</p>
-  </div>
+  </iApiFeature>
 </template>

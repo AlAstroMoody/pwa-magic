@@ -1,62 +1,54 @@
 <script setup lang="ts">
-import { iButton } from '@/shared/ui'
-import { showError } from '@/shared/utils'
+import { useApiGuard, useToast } from '@/shared/composables'
+import { iActions, iApiFeature, iButton } from '@/shared/ui'
 import { ref } from 'vue'
 
+const toast = useToast()
 const isSupported = ref('bluetooth' in navigator)
+const { meta, isSecureContext, requiresSecureContext, guard } = useApiGuard('WebBluetooth', isSupported)
 const indicator = ref<number>(0)
+
 async function scan() {
-  const connectToDevice = async ({
-    bleService,
-    bleCharacteristic,
-  }: {
-    bleService: string
-    bleCharacteristic: string
-  }) => {
-    try {
-      if (!navigator.bluetooth) return
-      const device = await navigator.bluetooth.requestDevice({
-        filters: [
-          {
-            services: [bleService],
-          },
-        ],
-      })
+  if (!guard()) return
 
-      device.addEventListener('gattserverdisconnected', () => {
-        indicator.value = 0
-      })
+  try {
+    if (!navigator.bluetooth) return
 
-      const server = await device.gatt.connect()
-      const service = await server.getPrimaryService(bleService)
-      const characteristic = await service.getCharacteristic(bleCharacteristic)
-      await characteristic.startNotifications()
+    const device = await navigator.bluetooth.requestDevice({
+      filters: [{ services: ['battery_service'] }],
+    })
 
-      characteristic.addEventListener('characteristicvaluechanged', (e: Event) => {
-        const event = e as CharacteristicValueChangeEvent
-        const value = event.target.value.getUint8(0)
+    device.addEventListener('gattserverdisconnected', () => {
+      indicator.value = 0
+    })
 
-        console.log(`${bleCharacteristic} changed`, value)
+    const server = await device.gatt!.connect()
+    const service = await server.getPrimaryService('battery_service')
+    const characteristic = await service.getCharacteristic('battery_level')
+    await characteristic.startNotifications()
 
-        indicator.value = value
-      })
+    characteristic.addEventListener('characteristicvaluechanged', (e: Event) => {
+      const event = e as CharacteristicValueChangeEvent
+      indicator.value = event.target.value.getUint8(0)
+    })
 
-      characteristic.readValue()
-
-      return characteristic
-    } catch (error) {
-      alert(`Ошибка: ${showError(error)}`)
-    }
+    characteristic.readValue()
+  } catch (error) {
+    toast.error(error)
   }
-
-  await connectToDevice({ bleService: 'battery_service', bleCharacteristic: 'battery_level' })
 }
 </script>
 
 <template>
-  <div v-if="!isSupported">Не поддерживается устройством</div>
-  <div v-else>
-    <iButton @click="scan">scan</iButton>
+  <iApiFeature
+    :is-supported="isSupported"
+    :is-secure-context="isSecureContext"
+    :requires-secure-context="requiresSecureContext"
+    :api-name="meta.title"
+  >
+    <iActions>
+      <iButton @click="scan">scan</iButton>
+    </iActions>
     <div v-if="indicator">Уровень заряда устройства: {{ indicator }}</div>
-  </div>
+  </iApiFeature>
 </template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useTheme } from '@/shared/composables'
-import { iThemeButton } from '@/shared/ui'
+import { iThemeButton, iToastContainer } from '@/shared/ui'
 import { onMounted } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 
@@ -32,6 +32,7 @@ onMounted(() => {
   </header>
 
   <RouterView />
+  <iToastContainer />
 </template>
 
 <style>
@@ -60,15 +61,15 @@ nav {
   font-size: 1rem;
 }
 
-nav a.router-link-exact-active {
+nav > a.router-link-exact-active {
   color: var(--color-text);
 }
 
-nav a.router-link-exact-active:hover {
+nav > a.router-link-exact-active:hover {
   background-color: transparent;
 }
 
-nav a {
+nav > a {
   display: inline-block;
   border-left: 1px solid var(--color-border);
   white-space: nowrap;

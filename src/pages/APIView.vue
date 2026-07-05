@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 
 import { iDetails } from '@/shared'
 import apiList from '@/static/APIDescription.json'
@@ -17,22 +17,18 @@ const example = defineAsyncComponent({
   },
 })
 </script>
+
 <template>
-  <main v-if="api && !importError">
+  <main v-if="api && !importError" class="api-view">
+    <RouterLink to="/" class="api-view__back">← Назад</RouterLink>
     <h1>{{ api.title }}</h1>
     <iDetails title="Описание" :description="api.description" />
     <iDetails title="Пример">
       <template #default><component :is="example"></component></template>
     </iDetails>
   </main>
-  <main v-else>В работе</main>
+  <main v-else class="api-view">
+    <RouterLink to="/" class="api-view__back">← Назад</RouterLink>
+    <p>В работе</p>
+  </main>
 </template>
-
-<style>
-.api-content__wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 16px;
-}
-</style>

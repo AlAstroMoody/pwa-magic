@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { iButton } from '@/shared/ui'
+import { useApiGuard, useToast } from '@/shared/composables'
+import { iActions, iApiFeature, iButton } from '@/shared/ui'
 import {
   getDisplayMedia,
   getSupportedConstraints,
@@ -9,6 +10,13 @@ import {
 } from '@/shared/utils'
 import { enumerateDevices } from '@/shared/utils/mediaCapture'
 import { onUnmounted, ref, useTemplateRef } from 'vue'
+
+const toast = useToast()
+const isSupported = ref(!!navigator.mediaDevices)
+const { meta, isSecureContext, requiresSecureContext, guard } = useApiGuard(
+  'MediaCapture',
+  isSupported,
+)
 
 const video = useTemplateRef<HTMLVideoElement>('video')
 const devicesList = ref<MediaDeviceInfo[] | null>(null)
@@ -26,37 +34,41 @@ const stopCurrentStream = () => {
 }
 
 const handleEnumerateDevices = async () => {
+  if (!guard()) return
   const result = await enumerateDevices()
   if (result.devices) {
     devicesList.value = result.devices
-    alert(JSON.stringify(result.devices))
+    toast.info(JSON.stringify(result.devices))
   } else if (result.error) {
-    alert(`Ошибка: ${showError(result.error)}`)
+    toast.error(result.error)
   }
 }
 
 const handleGetSupportedConstraints = () => {
+  if (!guard()) return
   constraints.value = getSupportedConstraints()
-  alert(JSON.stringify(constraints.value))
+  toast.info(JSON.stringify(constraints.value))
 }
 
 const handleGetUserMedia = async () => {
+  if (!guard()) return
   try {
     stopCurrentStream()
     const stream = await getUserMedia(video.value)
     currentStream.value = stream
   } catch (error) {
-    alert(`Ошибка захвата камеры: ${showError(error)}`)
+    toast.error(`Ошибка захвата камеры: ${showError(error)}`)
   }
 }
 
 const handleGetDisplayMedia = async () => {
+  if (!guard()) return
   try {
     stopCurrentStream()
     const stream = await getDisplayMedia(video.value)
     currentStream.value = stream
   } catch (error) {
-    alert(`Ошибка захвата экрана: ${showError(error)}`)
+    toast.error(`Ошибка захвата экрана: ${showError(error)}`)
   }
 }
 
@@ -66,14 +78,21 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="api-content__wrapper">
-    <iButton @click="handleEnumerateDevices">Получить список доступных устройств</iButton>
-    <iButton @click="handleGetSupportedConstraints">Получить список требований к потоку</iButton>
-    <iButton @click="handleGetUserMedia">Захват камеры</iButton>
-    <iButton @click="handleGetDisplayMedia">Захват экрана</iButton>
-    <iButton @click="togglePictureInPicture(video)">Toggle Picture-in-Picture</iButton>
+  <iApiFeature
+    :is-supported="isSupported"
+    :is-secure-context="isSecureContext"
+    :requires-secure-context="requiresSecureContext"
+    :api-name="meta.title"
+  >
+    <iActions>
+      <iButton @click="handleEnumerateDevices">Получить список доступных устройств</iButton>
+      <iButton @click="handleGetSupportedConstraints">Получить список требований к потоку</iButton>
+      <iButton @click="handleGetUserMedia">Захват камеры</iButton>
+      <iButton @click="handleGetDisplayMedia">Захват экрана</iButton>
+      <iButton @click="togglePictureInPicture(video)">Toggle Picture-in-Picture</iButton>
+    </iActions>
     <video ref="video" width="320" height="240" class="media-capture__video" autoplay />
-  </div>
+  </iApiFeature>
 </template>
 
 <style>
