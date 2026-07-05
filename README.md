@@ -122,8 +122,8 @@ async function runDemo() {
 
 ### 5. Правила
 
-- **Не используй `scoped`** — классы либо общие (`api-*`), либо с префиксом API (`clipboard-api__image`)
-- **Не дублируй проверки** — `guard()` в script, `iApiFeature` в template; не пиши одно и то же в обоих местах
+- **Не использовать `scoped`** — классы либо общие (`api-*`), либо с префиксом API (`clipboard-api__image`)
+- **Не дублировать проверки** — `guard()` в script, `iApiFeature` в template;
 - **Сторонние npm-библиотеки** — только если нет нативного API; пометить в UI (см. BarcodeDetection + `qrcode`)
 - **Скрыть с главной, но оставить в JSON** — фильтр в `HomeView.vue` (как WebOtp)
 
